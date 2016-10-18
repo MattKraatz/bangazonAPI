@@ -65,7 +65,6 @@ namespace BangazonAPI.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Product product)
         {
-            Console.WriteLine($"HERES SOME SHIT -----> {product}");
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -93,14 +92,53 @@ namespace BangazonAPI.Controllers
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public IActionResult Put(int id, [FromBody]Product value)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                if (value.ProductId != id)
+                {
+                    return NotFound();
+                }
+                context.Product.Update(value);
+                context.SaveChanges();
+            }
+            catch (System.InvalidOperationException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return NotFound();
+            }
+            return new NoContentResult();
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                Product product = context.Product.Single(m => m.ProductId == id);
+                if (product == null)
+                {
+                    return NotFound();
+                }
+                context.Product.Remove(product);
+                context.SaveChanges();
+            }
+            catch (System.InvalidOperationException ex)
+            {
+                Console.WriteLine("Exception Fired");
+                return NotFound();
+            }
+            return new NoContentResult();
         }
         private bool ProductExists(int id)
         {

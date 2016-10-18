@@ -234,3 +234,5 @@ _Pvt_Extensions
 .fake/
 
 bangazon.db
+wwwroot/bower_components
+wwwroot/node_modules

@@ -12,11 +12,11 @@ namespace BangazonAPI.Controllers
 {
     [ProducesAttribute("application/json")]
     [Route("[controller]")]
-    public class OrdersController : Controller
+    public class LineItemController : Controller
     {
         private BangazonContext context;
 
-        public OrdersController(BangazonContext ctx)
+        public LineItemController(BangazonContext ctx)
         {
             context = ctx;
         }
@@ -25,18 +25,18 @@ namespace BangazonAPI.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            IQueryable<object> orders = from order in context.Order select order;
+            IQueryable<object> lineItem = from LineItem in context.LineItem select LineItem;
 
-            if (orders == null)
+            if (lineItem == null)
             {
                 return NotFound();
             }
 
-            return Ok(orders);
+            return Ok(lineItem);
         }
 
         // GET api/values/5
-        [HttpGet("{id}", Name = "GetOrder")]
+        [HttpGet("{id}", Name = "GetLineItem")]
         public IActionResult Get([FromRoute] int id)
         {
             if (!ModelState.IsValid)
@@ -46,14 +46,14 @@ namespace BangazonAPI.Controllers
 
             try
             {
-                Order order = context.Order.Single(m => m.OrderId == id);
+                LineItem lineItem = context.LineItem.Single(m => m.LineItemId == id);
 
-                if (order == null)
+                if (lineItem == null)
                 {
                     return NotFound();
                 }
 
-                return Ok(order);
+                return Ok(lineItem);
             }
             catch (System.InvalidOperationException ex)
             {
@@ -63,20 +63,21 @@ namespace BangazonAPI.Controllers
 
         // POST api/values
         [HttpPost]
-        public IActionResult Post([FromBody] Order order)
+        public IActionResult Post([FromBody] LineItem lineItem)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            context.Order.Add(order);
+
+            context.LineItem.Add(lineItem);
             try
             {
                 context.SaveChanges();
             }
             catch (DbUpdateException)
             {
-                if (OrderExists(order.OrderId))
+                if (LineItemExists(lineItem.LineItemId))
                 {
                     return new StatusCodeResult(StatusCodes.Status409Conflict);
                 }
@@ -86,12 +87,12 @@ namespace BangazonAPI.Controllers
                 }
             }
 
-            return CreatedAtRoute("GetOrder", new { id = order.OrderId }, order);
+            return CreatedAtRoute("GetLineItem", new { id = lineItem.LineItemId }, lineItem);
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody]Order value)
+        public IActionResult Put(int id, [FromBody]LineItem value)
         {
             if (!ModelState.IsValid)
             {
@@ -99,11 +100,11 @@ namespace BangazonAPI.Controllers
             }
             try
             {
-                if (value.OrderId != id)
+                if (value.LineItemId != id)
                 {
                     return NotFound();
                 }
-                context.Order.Update(value);
+                context.LineItem.Update(value);
                 context.SaveChanges();
             }
             catch (System.InvalidOperationException ex)
@@ -124,12 +125,12 @@ namespace BangazonAPI.Controllers
             }
             try
             {
-                Order order = context.Order.Single(m => m.OrderId == id);
-                if (order == null)
+                LineItem lineItem = context.LineItem.Single(m => m.LineItemId == id);
+                if (lineItem == null)
                 {
                     return NotFound();
                 }
-                context.Order.Remove(order);
+                context.LineItem.Remove(lineItem);
                 context.SaveChanges();
             }
             catch (System.InvalidOperationException ex)
@@ -139,9 +140,9 @@ namespace BangazonAPI.Controllers
             }
             return new NoContentResult();
         }
-        private bool OrderExists(int id)
+        private bool LineItemExists(int id)
         {
-            return context.Order.Count(e => e.OrderId == id) > 0;
+            return context.LineItem.Count(e => e.LineItemId == id) > 0;
         }
     }
 }

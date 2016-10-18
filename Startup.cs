@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Bangazon.Data;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace BangazonAPI
 {
@@ -56,7 +57,10 @@ namespace BangazonAPI
             Console.WriteLine("Configure");
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-
+            app.UseStaticFiles();
+            app.UseDefaultFiles();
+            app.UseFileServer(enableDirectoryBrowsing: true);
+            app.UseCors("AllowDevelopmentEnvironment");
             app.UseMvc();
         }
     }

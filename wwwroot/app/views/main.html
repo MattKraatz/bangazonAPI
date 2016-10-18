@@ -1,0 +1,41 @@
+<div class="row">
+  <h3>Do Your Bidding</h3>
+<select ng-model="request" ng-options="request for request in requestOptions"></select>
+<select ng-model="model" ng-options="model for model in modelOptions"></select>
+<label for="recordID">ID: </label><input type="number" name="recordID" ng-model="recordID">
+<button ng-click="sendRequest()">SEND REQUEST</button>
+</div>
+<div class="row">
+  <h4>Request Body (if applicable)</h4>
+  <!-- CUSTOMERS INPUT -->
+  <div ng-show="(request == 'POST' || request == 'PUT') && model == 'customers'">
+    <label for="Customer.CustomerID">CustomerID: </label><input type="number" name="Customer.CustomerID" ng-model="Customer.CustomerID">
+    <label for="Customer.DateCreated">Date Created: </label><input type="text" name="Customer.DateCreated" ng-model="Customer.DateCreated">
+    <label for="Customer.FirstName">First Name: </label><input type="text" name="Customer.FirstName" ng-model="Customer.FirstName">
+    <label for="Customer.LastName">Last Name: </label><input type="text" name="Customer.LastName" ng-model="Customer.LastName">
+  </div>
+  <!-- ORDERS INPUT -->
+  <div ng-show="(request == 'POST' || request == 'PUT') && model == 'orders'">
+    <label for="Orders.OrderID">OrderID: </label><input type="number" name="Orders.OrderID" ng-model="Orders.OrderID">
+    <label for="Orders.DateCreated">Date Created: </label><input type="text" name="Orders.DateCreated" ng-model="Orders.DateCreated">
+    <label for="Orders.CustomerID">CustomerID: </label><input type="number" name="Orders.CustomerID" ng-model="Orders.CustomerID">
+  </div>
+  <!-- PRODUCT INPUT -->
+  <div ng-show="(request == 'POST' || request == 'PUT') && model == 'products'">
+    <label for="Products.ProductID">ProductID: </label><input type="number" name="Products.ProductID" ng-model="Products.ProductID">
+    <label for="Products.DateCreated">Date Created: </label><input type="text" name="Products.DateCreated" ng-model="Products.DateCreated">
+    <label for="Products.Description">Description: </label><input type="text" name="Products.Description" ng-model="Products.Description">
+    <label for="Products.Price">Price: </label><input type="number" name="Products.Price" ng-model="Products.Price">
+  </div>
+</div>
+<div class="row">
+  <h4>Response</h4>
+  <table border="1">
+  <tr>
+      <th ng-repeat="column in results.cols">{{column}}</th>
+  </tr>
+  <tr ng-repeat="row in results.rows">
+    <td ng-repeat="column in results.cols">{{row[column]}}</td>
+  </tr>
+</table>
+</div>

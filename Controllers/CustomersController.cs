@@ -7,6 +7,7 @@ using Bangazon.Data;
 using Bangazon.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Cors;
 
 namespace BangazonAPI.Controllers
 {
@@ -48,7 +49,6 @@ namespace BangazonAPI.Controllers
             try
             {
                 Customer customer = context.Customer.Single(m => m.CustomerId == id);
-
                 if (customer == null)
                 {
                     return NotFound();
@@ -94,14 +94,53 @@ namespace BangazonAPI.Controllers
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public IActionResult Put(int id, [FromBody]Customer value)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                if (value.CustomerId != id)
+                {
+                    return NotFound();
+                }
+                context.Customer.Update(value);
+                context.SaveChanges();
+            }
+            catch (System.InvalidOperationException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return NotFound();
+            }
+            return new NoContentResult();
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                Customer customer = context.Customer.Single(m => m.CustomerId == id);
+                if (customer == null)
+                {
+                    return NotFound();
+                }
+                context.Customer.Remove(customer);
+                context.SaveChanges();
+            }
+            catch (System.InvalidOperationException ex)
+            {
+                Console.WriteLine("Exception Fired");
+                return NotFound();
+            }
+            return new NoContentResult();
         }
 
         private bool CustomerExists(int id)
